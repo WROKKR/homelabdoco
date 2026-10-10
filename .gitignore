@@ -1,0 +1,26 @@
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.pfx
+*.p12
+secrets/
+credentials/
+terraform.tfstate
+terraform.tfstate.*
+.terraform/
+*.tfvars
+!*.tfvars.example
+
+# Python build output
+__pycache__/
+*.pyc
+
+# Obsidian per-device UI state (vault settings are kept)
+.obsidian/workspace*.json
+docs/.obsidian/workspace*.json
+
+# Scratch and generated artifacts
+temp.txt
+*.zip

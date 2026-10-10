@@ -1,0 +1,19 @@
+# Home Assistant: Frigate last completed review, from Frigate's MQTT reviews topic.
+# Add under the top-level `template:` key in configuration.yaml (merge if it exists),
+# then Developer Tools -> YAML -> Check configuration, and reload Template entities.
+# Assumes Frigate's default MQTT topic prefix `frigate`.
+template:
+  - triggers:
+      - trigger: mqtt
+        topic: frigate/reviews
+        value_template: "{{ value_json.type }}"
+        payload: end
+    sensor:
+      - name: Frigate last review
+        unique_id: frigate_last_review
+        icon: mdi:cctv
+        state: >-
+          {%- set r = trigger.payload_json.after %}
+          {%- set objects = r.data.objects | default([]) | unique | join(', ') %}
+          {{- ((r.start_time | timestamp_custom('%H:%M')) ~ ' ' ~ r.camera ~ ': '
+             ~ (objects if objects else 'no labelled objects') ~ ' (' ~ r.severity ~ ')') | truncate(250, true, '') }}

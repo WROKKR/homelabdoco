@@ -1,0 +1,20 @@
+{
+  "entities": [
+    {"key": "solar_today", "entity_id": "sensor.roof_gosungrow_1728330_14_1_1_energy_storage_system1_gosungrow_overview_daily_generation", "label": "Solar generation today", "category": "solar", "daily_total": true},
+    {"key": "battery_soc", "entity_id": "sensor.roof_gosungrow_1728330_14_1_1_energy_storage_system1_gosungrow_battery_information_battery_level_soc", "label": "Home battery charge", "category": "energy"},
+    {"key": "feed_in_price", "entity_id": "sensor.dan_and_den_home_feed_in_price", "label": "Solar feed-in price now", "category": "energy"},
+    {"key": "backup_dockerhost26_local_status", "entity_id": "sensor.backrest_plan_dockerhost26_local_last_backup_status", "label": "Backup: dockerhost26 to local, last result", "category": "backup"},
+    {"key": "backup_dockerhost26_local_time", "entity_id": "sensor.backrest_plan_dockerhost26_local_last_backup", "label": "Backup: dockerhost26 to local, last backup", "category": "backup"},
+    {"key": "backup_dockerhost26_wasabi_status", "entity_id": "sensor.backrest_plan_dockerhost26_wasabi_last_backup_status", "label": "Backup: dockerhost26 to Wasabi, last result", "category": "backup"},
+    {"key": "backup_dockerhost26_wasabi_time", "entity_id": "sensor.backrest_plan_dockerhost26_wasabi_last_backup", "label": "Backup: dockerhost26 to Wasabi, last backup", "category": "backup"},
+    {"key": "backup_hexos_backups_wasabi_status", "entity_id": "sensor.backrest_plan_hexos_backups_wasabi_last_backup_status", "label": "Backup: HexOS backups to Wasabi, last result", "category": "backup"},
+    {"key": "backup_hexos_backups_wasabi_time", "entity_id": "sensor.backrest_plan_hexos_backups_wasabi_last_backup", "label": "Backup: HexOS backups to Wasabi, last backup", "category": "backup"},
+    {"key": "backup_immich_photos_wasabi_status", "entity_id": "sensor.backrest_plan_immich_photos_wasabi_last_backup_status", "label": "Backup: Immich photos to Wasabi, last result", "category": "backup"},
+    {"key": "backup_immich_photos_wasabi_time", "entity_id": "sensor.backrest_plan_immich_photos_wasabi_last_backup", "label": "Backup: Immich photos to Wasabi, last backup", "category": "backup"},
+    {"key": "backup_local_restic_appliance_status", "entity_id": "sensor.backrest_plan_local_restic_appliance_last_backup_status", "label": "Backup: restic appliance to local, last result", "category": "backup"},
+    {"key": "backup_local_restic_appliance_time", "entity_id": "sensor.backrest_plan_local_restic_appliance_last_backup", "label": "Backup: restic appliance to local, last backup", "category": "backup"},
+    {"key": "backup_wasabi_restic_appliance_status", "entity_id": "sensor.backrest_plan_wasabi_restic_appliance_last_backup_status", "label": "Backup: restic appliance to Wasabi, last result", "category": "backup"},
+    {"key": "backup_wasabi_restic_appliance_time", "entity_id": "sensor.backrest_plan_wasabi_restic_appliance_last_backup", "label": "Backup: restic appliance to Wasabi, last backup", "category": "backup"},
+    {"key": "frigate_last_review", "entity_id": "sensor.frigate_last_review", "label": "Frigate last completed review", "category": "camera", "recent_changes": true}
+  ]
+}

@@ -1,0 +1,17 @@
+Use this reference for homelab questions in this conversation. These are documented facts, not live health checks. State unknowns explicitly; do not invent details or claim you inspected systems. Do not generate operational commands unless asked. Inference must remain fully local.
+
+Homelab reference — 2026-10-04
+
+All server VMs run on Proxmox. Unraid provides media shares to the Plex VM.
+Router: odin, UniFi Dream Machine Pro SE, 192.168.0.1; also runs UniFi Protect.
+Proxmox host: yggdrasil, 192.168.0.50, Ryzen 9 3950X, 125 GiB usable RAM. Host GPU inventory needs reconciliation.
+Docker VM: dockerhost26, 192.168.0.160; hosts n8n, Open WebUI, Technitium DNS and Nginx Proxy Manager.
+Urdarbrunnr: physical Unraid host, 192.168.0.150. Mimisbrunnr: physical TrueNAS/HexOS host, 192.168.0.100.
+Home Assistant VM: 192.168.0.161.
+ollama01: 192.168.0.166, Ubuntu 22.04.5, 8 vCPUs, 31 GiB reported RAM; no physical GPU shown. Ollama 0.32.3. Used for Home Assistant and n8n workflows.
+ollama2: 192.168.0.167, Ubuntu 26.04.1, 8 vCPUs, 30 GiB reported RAM, GTX 1660 Ti with 6 GiB VRAM. Ollama 0.34.2; dedicated to Hermes for now.
+Hermes: installed on ollama2; local Ollama endpoint; Discord bot named Skip. Model alias hermes uses Qwen3.5 9B, Q4_K_M, 65536 context. Execution/file tools disabled. Read-only tools: Proxmox status, Dockhand container status, combined health report, and Home Assistant (solar, battery, feed-in price, Backrest plan status, Frigate reviews). Generated shell advice failed correctness checks; use curated procedures and human review.
+Backup VM: restic, 192.168.0.249. A local Restic smoke backup/check/restore passed. Minecraft VM 119 backup passed isolated restore/boot testing. Backrest runs six plans (dockerhost26, HexOS backups, Immich photos and the restic appliance, to local and/or Wasabi); their live last result and last backup time come from the Home Assistant tool. Plan schedules are not documented. Reported success is not proof of restorability.
+Unknown: Ollama Proxmox VM IDs; exact HA/n8n model selections and client URLs; present live health.
+
+Reply only: Reference received.

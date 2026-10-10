@@ -1,0 +1,50 @@
+name: shlink
+services:
+  shlink:
+    image: shlinkio/shlink:5.1.6
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "192.168.0.160:${SHLINK_PORT:-8085}:8080"
+    environment:
+      DEFAULT_DOMAIN: ${DEFAULT_DOMAIN:?set DEFAULT_DOMAIN in .env}
+      IS_HTTPS_ENABLED: ${IS_HTTPS_ENABLED:-true}
+      TIMEZONE: Australia/Brisbane
+      DB_DRIVER: postgres
+      DB_HOST: db
+      DB_NAME: shlink
+      DB_USER: shlink
+      DB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      GEOLITE_LICENSE_KEY: ${GEOLITE_LICENSE_KEY:-}
+      DEFAULT_BASE_URL_REDIRECT: ${DEFAULT_BASE_URL_REDIRECT:-}
+      DEFAULT_INVALID_SHORT_URL_REDIRECT: ${DEFAULT_INVALID_SHORT_URL_REDIRECT:-}
+    logging: &logging
+      driver: json-file
+      options: {max-size: 10m, max-file: '3'}
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: shlink
+      POSTGRES_USER: shlink
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shlink -d shlink"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    logging: *logging
+
+  # Admin UI. A static app: the API key is entered in, and stays in, your browser.
+  # Keep it LAN-only; never proxy it publicly.
+  web-client:
+    image: shlinkio/shlink-web-client:4.8.1
+    restart: unless-stopped
+    ports:
+      - "192.168.0.160:${WEB_CLIENT_PORT:-8086}:8080"
+    logging: *logging

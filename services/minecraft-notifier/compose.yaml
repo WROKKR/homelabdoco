@@ -1,0 +1,35 @@
+name: minecraft-notifier
+services:
+  notifier:
+    build: .
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 128m
+    environment:
+      DELIVERY_MODE: n8n
+      SERVER_NAME: friendsminecraft-test
+    volumes:
+      - type: bind
+        source: /srv/minecraft/data/logs
+        target: /logs
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /srv/minecraft/notifier-state
+        target: /state
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /opt/minecraft/secrets/webhook.json
+        target: /run/secrets/webhook.json
+        read_only: true
+        bind:
+          create_host_path: false
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '2'

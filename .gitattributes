@@ -1,0 +1,9 @@
+# Store text with LF line endings and check out LF everywhere, so shell
+# scripts, Python and installers copied from Windows still run on Linux hosts.
+* text=auto eol=lf
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.png binary
+*.jpg binary
+*.zip binary
