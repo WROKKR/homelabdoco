@@ -132,6 +132,13 @@ Do not record passwords, K3s join tokens, private keys, or hardware identifiers 
 
 ## Current follow-up concerns
 
+### PS1 join used the wrong token source directory
+
+- **Symptom:** PS1's K3s agent exited with `Error: --token is required`; its configured token file was missing or empty.
+- **Cause:** Transfer commands used the default `/var/lib/rancher/k3s/server/agent-token`, but PC3 uses the custom data directory `/mnt/k3s-storage/k3s`.
+- **Resolution:** Transfer `/mnt/k3s-storage/k3s/server/node-token` directly over SSH into a private temporary file, install it on PS1 as root-only `/etc/rancher/k3s/agent-token`, remove the temporary file, and restart the agent. PS1 reached `Ready` on 2026-10-11.
+- **Lesson:** Resolve token paths against the server's actual data directory and check source and destination files are nonempty. Never display token contents or put them in this repository.
+
 - The cluster has one control-plane/etcd member. PC3 failure removes cluster management and scheduling until it returns, although already-running workloads on agents may continue.
 - PC3-local persistent volumes are not replicated or highly available.
 - The Turing Pi 2 v2.4 Node 3 PCIe/SATA path should be watched for link failures after cold boots.

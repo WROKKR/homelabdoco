@@ -37,6 +37,8 @@ The CM4 wireless variants and cooling arrangement are not yet documented.
 
 ## Other Raspberry Pi plans
 
+- `PS1` (`192.168.0.186`) is a standalone Raspberry Pi 4 with 8 GB RAM and microSD boot storage, joined as K3s worker `ps1` on 2026-10-11. The user-supplied node output confirms `Ready`, K3s `v1.36.3+k3s1`, Debian 13 (64-bit Raspberry Pi OS), kernel `6.18.50+rpt-rpi-v8`, and containerd `2.3.2-k3s2`. No dedicated workload is assigned. Memory cgroups were enabled and rpi-swap disabled before joining; the supplied checks confirm `memory` is available and no active swap remains. Workload networking validation is pending. PC3 remains the sole server/etcd member; PC3-local persistent volumes remain tied to PC3.
+
 - Two Raspberry Pi 4 systems are future purchases rather than current inventory.
   - One is intended to host a second Technitium DNS server.
   - One is intended to drive a smart dashboard.
