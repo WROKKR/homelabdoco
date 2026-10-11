@@ -1,5 +1,9 @@
 # Backup strategy
 
+## Status
+
+This is the original proposed design. Later records describe six Backrest plans orchestrated from the existing `restic` VM, including local and Wasabi destinations. The direct-from-dockerhost26 architecture, schedules and retention below are proposals, not verified deployed settings. See [`backup-troubleshooting.md`](backup-troubleshooting.md) for the staging incident and required configuration inventory.
+
 ## Objective
 
 Obtain the most recovery value from the Wasabi account without deploying another VM or uploading replaceable bulk data.

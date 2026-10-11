@@ -63,7 +63,7 @@ Transient disk usage, process state, machine identifiers, boot identifiers, UUID
 - Unraid currently serves media-related shares.
 - The planned HexOS/TrueNAS system is intended for more important content.
 - All VMs live on Proxmox; Unraid is used for shares rather than VM hosting.
-- No backup system has been built yet.
+- Backrest backup plans are documented on the `restic` VM; deployed schedules, source coverage and recovery validation remain incomplete. See [`backup-troubleshooting.md`](backup-troubleshooting.md).
 - Hostnames, hardware specifications, full network addressing, storage protection, and availability requirements are not yet documented.
 - K3s is the adopted experimental orchestration platform for the current Turing Pi cluster.
 - Ceph is an exploratory future interest. It might use some, all, or none of the Turing Pi cluster and must not be treated as a committed storage design.

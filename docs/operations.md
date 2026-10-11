@@ -12,13 +12,13 @@ On 2026-09-27, a stopped-mode `vzdump` of Minecraft VM 119 to the local `backups
 
 A replacement stopped-mode archive, `vzdump-qemu-119-2026_09_27-13_52_26.vma.zst`, subsequently passed both Zstandard checksum testing and streamed VMA verification. It reported an uncompressed size of 13,561,071,104 bytes and SHA-256 `1b2b2aa5910bc2d39e9adb286ac5282ab9e57f412a136726ed65980bfefbe951`. It was restored under a separate VM ID with networking removed; the restored guest booted, mounted `/srv/minecraft`, retained the world files, and started Minecraft locally. This passes the local backup-and-recovery gate for VM 119. Scheduling, retention, and failure notification remain to be configured.
 
-Wasabi offsite storage, production backup sources, scheduling, retention, notifications, and broader recovery tests are not configured yet. `yggdrasil` also has a 3.6 TB XFS disk mounted at `/mnt/pve/backups`, but its presence must not be treated as evidence of a working backup or recovery process.
+Later October records describe six Backrest plans, including Wasabi destinations. Exact production source coverage, schedules, retention, notifications and broader recovery tests remain unverified. The dockerhost26 staging freshness failure reported on 2026-10-11 and required discovery data are documented in [`backup-troubleshooting.md`](backup-troubleshooting.md). `yggdrasil` also has a 3.6 TB XFS disk mounted at `/mnt/pve/backups`, but its presence must not be treated as evidence of a working backup or recovery process.
 
-The implementation framework is maintained in [`backup-strategy.md`](backup-strategy.md). It uses local Proxmox whole-VM backups plus direct encrypted Restic uploads of selected high-value data to Wasabi, with no additional backup VM. The future HexOS/TrueNAS host becomes the stronger local target.
+The implementation framework is maintained in [`backup-strategy.md`](backup-strategy.md). Its direct-upload architecture and schedules are the original proposal; later records place orchestration on the existing `restic` VM. Reconcile actual plan configuration before treating the proposal as deployed behavior.
 
 ## Recovery
 
-No tested recovery procedure is currently documented. Do not assume that VM, container, configuration, Unraid-share, or UniFi Protect data is recoverable until backups and restore tests are implemented.
+A local Restic smoke-test restore and an isolated Minecraft VM 119 restore/boot test are documented; broader application recovery procedures remain untested. Do not assume that VM, container, configuration, Unraid-share, or UniFi Protect data is recoverable until backups and restore tests are implemented.
 
 ## Monitoring and alerting
 

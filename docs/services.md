@@ -79,4 +79,4 @@ Frigate provides local object detection and Review items; UniFi Protect remains 
 - This is a runtime snapshot, not the authoritative deployment configuration.
 - Exact `/opt` project directories, volumes, bind mounts, networks, restart policies, environment-variable names, and reverse-proxy routes are not yet documented.
 - Container status can change; verify live state before maintenance.
-- No backup system has been built yet.
+- Six Backrest plans are documented in the October inventory; source coverage, schedules and recovery validation remain incomplete. See [`backup-troubleshooting.md`](backup-troubleshooting.md).
