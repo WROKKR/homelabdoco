@@ -163,6 +163,56 @@ bind mounts are covered, and how newer Shlink, Ghost and Firefly databases are
 protected. Three logical dump success messages do not prove coverage of all
 current databases; a reviewed stopped-file export may provide other protection.
 
+## Reviewed repair: replace retired Portainer volume — 2026-10-11
+
+The user confirms Portainer was replaced with Dockhand. Supplied Docker mount
+inspection shows Dockhand's persistent `/app/data` in named volume
+`dockhand_dockhand_data`, backed by
+`/var/lib/docker/volumes/dockhand_dockhand_data/_data`. Its other supplied mount
+is the Docker socket `/var/run/docker.sock`, not persistent application data.
+
+The supplied `homelab-files-export` copies `/opt/containers` and an explicit
+three-volume list. Portainer's missing volume is in that list; Dockhand's volume
+is absent. The exact proposed change is:
+
+```diff
+ for VOLUME in \
+   vocodex_pgdata \
+   technitium_config \
+-  portainer_portainer_data
++  dockhand_dockhand_data
+ do
+```
+
+This replaces the retired dependency and adds Dockhand's persistent state to the
+recovery set. Live installation and recovery verification are still pending.
+The script stops workloads before checking volume existence, explaining why
+an obsolete entry also causes an avoidable outage. Preflight the three selected
+volumes before retrying. A future improvement should validate all required paths
+and volume entries before stopping containers, while continuing to fail if a
+required source is missing.
+
+On dockerhost26, the reviewed edit below is reversible and does not execute the
+exporter. The first command verifies all selected volumes exist. The sed command
+saves the prior script next to it; avoid repeating it and overwriting that backup.
+Keep the backup on the host, not in Git, since installed scripts can contain secrets.
+
+```sh
+sudo docker volume inspect vocodex_pgdata technitium_config dockhand_dockhand_data --format '{{.Name}}'
+sudo sed -i.before-dockhand-fix-20261011 's/^  portainer_portainer_data$/  dockhand_dockhand_data/' /usr/local/sbin/homelab-files-export
+sudo bash -n /usr/local/sbin/homelab-files-export
+sudo grep -A 5 '^for VOLUME in' /usr/local/sbin/homelab-files-export
+```
+
+Proceed to the next command only if the previous command succeeds. Confirm the
+volume list now names Dockhand and no longer Portainer. Manual export retry
+requires confirmation because it stops containers. After approval, validate a
+successful export, all expected container health, absent incomplete marker and
+fresh source completion timestamp. Then refresh restic staging, verify its
+freshness hook, retry each Backrest plan and restore representative data,
+including Dockhand. Wasabi's separate failure log and both plans' actual coverage
+remain outstanding. A successful job does not substitute for this recovery test.
+
 ## Documented backup estate
 
 Existing October records describe Backrest on `restic` (`192.168.0.249`) and six

@@ -80,3 +80,13 @@ Frigate provides local object detection and Review items; UniFi Protect remains 
 - Exact `/opt` project directories, volumes, bind mounts, networks, restart policies, environment-variable names, and reverse-proxy routes are not yet documented.
 - Container status can change; verify live state before maintenance.
 - Six Backrest plans are documented in the October inventory; source coverage, schedules and recovery validation remain incomplete. See [`backup-troubleshooting.md`](backup-troubleshooting.md).
+
+## Docker management and backup update — 2026-10-11
+
+The user confirms Portainer was replaced with Dockhand, superseding the older
+Portainer management notes. Supplied mount inspection identifies Dockhand's
+`/app/data` as named volume `dockhand_dockhand_data`; the Docker socket is also
+bind-mounted. The existing file exporter still requires the retired
+`portainer_portainer_data` volume and omits Dockhand's volume. A reviewed
+replacement is recorded in [backup troubleshooting](backup-troubleshooting.md);
+live application and backup/restore validation are pending.
