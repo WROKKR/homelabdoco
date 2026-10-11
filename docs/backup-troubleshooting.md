@@ -126,6 +126,43 @@ dockerhost26 (`192.168.0.160`), then inspect its status, logs and database expor
 steps before deciding on a repair. This does not establish the Wasabi plan's
 own error or complete staging/repository permissions.
 
+## Source export failure identified — 2026-10-11
+
+User-supplied dockerhost26 discovery identifies the enabled
+`homelab-backup-export.timer`, triggering `homelab-backup-export.service` at
+02:00 AEST (October 11 last trigger; October 12 next trigger). Export scripts
+are `/usr/local/sbin/homelab-backup-export`, `homelab-files-export`, and
+`homelab-db-export`. Service `ExecStart` runs the main script.
+
+The October 10 and 11 journals both report successful logical dumps for Vocodex
+PostgreSQL, n8n PostgreSQL and BookStack MariaDB, then stop 36 running containers
+and begin copying `/opt/containers` and named volumes. After copying
+`vocodex_pgdata` and `technitium_config`, Docker reports:
+`get portainer_portainer_data: no such volume`.
+The exporter then reports starting Technitium first, pia-vpn afterward, ordinary
+containers next and VPN dependents after VPN health. It reports all previously
+running containers restarted, then the service exits 1. These are script reports,
+not independent application-health or dump-integrity checks.
+
+The missing Portainer volume is the observed failure point explaining the
+unfinished source export. An obsolete required-volume entry is the leading
+hypothesis: the October service inventory did not list running Portainer, but
+retirement has not been confirmed. Inspect the file exporter and actual volumes/
+container mounts before changing the recovery set. Never create an empty volume
+to satisfy the exporter or skip missing required volumes indiscriminately.
+If Portainer was intentionally retired, remove its obsolete entry from the
+reviewed export inventory; if still needed, locate its actual data or recover
+it before considering backups complete.
+
+This exporter is service-disrupting: it stops Docker workloads, including DNS
+and the VPN stack, for the file copy. A manual export retry needs confirmation
+under the repository working agreement after the concrete fix is reviewed.
+Do read-only inventory/script inspection first. Keep incomplete markers intact.
+Remaining coverage questions include whether all required named volumes and
+bind mounts are covered, and how newer Shlink, Ghost and Firefly databases are
+protected. Three logical dump success messages do not prove coverage of all
+current databases; a reviewed stopped-file export may provide other protection.
+
 ## Documented backup estate
 
 Existing October records describe Backrest on `restic` (`192.168.0.249`) and six

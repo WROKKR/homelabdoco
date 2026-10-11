@@ -16,6 +16,16 @@ Later October records describe six Backrest plans, including Wasabi destinations
 
 The implementation framework is maintained in [`backup-strategy.md`](backup-strategy.md). Its direct-upload architecture and schedules are the original proposal; later records place orchestration on the existing `restic` VM. Reconcile actual plan configuration before treating the proposal as deployed behavior.
 
+### dockerhost26 export maintenance
+
+The export job observed on 2026-10-10/11 stops 36 running Docker containers for
+file copying, including Technitium DNS and the VPN stack, then reports restarting
+them with DNS/VPN dependency ordering. Manual export retries are service-disrupting
+and require confirmation after script review. Its nightly 02:00 AEST trigger
+precedes the restic pull at 02:30. The export currently fails on a missing
+`portainer_portainer_data` volume; see [backup troubleshooting](backup-troubleshooting.md).
+The source export inventory and current application coverage remain to be reconciled.
+
 ## Recovery
 
 A local Restic smoke-test restore and an isolated Minecraft VM 119 restore/boot test are documented; broader application recovery procedures remain untested. Do not assume that VM, container, configuration, Unraid-share, or UniFi Protect data is recoverable until backups and restore tests are implemented.
