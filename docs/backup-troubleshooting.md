@@ -68,6 +68,48 @@ all output for embedded credentials before sharing. Do not use `bash -x`, which
 can expose expanded secrets, or manually restart the service until the pull
 script's effects have been reviewed.
 
+## Supplied script behavior — 2026-10-11
+
+The user supplied both scripts. They establish this pull pipeline:
+
+- Source: `restic-pull@192.168.0.160:/var/lib/homelab-export/`.
+- SSH identity file reference: `/opt/backrest/ssh/dockerhost26_ed25519` (never store its contents).
+- Destination: `/srv/backups/staging/dockerhost26/`.
+- Advisory lock: `/run/lock/pull-dockerhost26-backup.lock`.
+- Remote readiness requires no `files/.incomplete` and a nonempty
+  `files/COMPLETED_AT` under the source tree.
+- Source timestamp must be no more than six hours old or five minutes ahead.
+- After readiness and age checks, the script creates destination `.incomplete`,
+  then uses `rsync -a --delete-delay --partial` to mirror the export tree.
+- After transfer it rechecks readiness and requires the source timestamp to be
+  unchanged. It writes `SOURCE_COMPLETED_AT` and `PULLED_AT`, then removes the
+  destination incomplete marker.
+- The Backrest freshness check requires the destination directory, no incomplete
+  marker, and nonempty source/pull timestamp files. It validates the pull timestamp
+  against the three-hour limit; it does not parse the recorded source timestamp.
+
+The first `remote_ready` runs before the ERR trap and returns SSH's remote `test`
+status. Missing/empty remote completion metadata or an incomplete export can
+therefore cause exit 1 without a diagnostic. This is consistent with the journal,
+but remains a hypothesis until the remote paths are checked as the service user.
+Other pre-transfer failures include opening the local lock, SSH/key access and
+timestamp parsing. A stale-source branch prints a specific diagnostic; none was
+present in the supplied journal. Local lock/key/staging permissions and remote
+path access still require verification.
+
+Inspect source completion metadata through SSH as local `backrest`, using the
+same identity as the script. Report directory accessibility, incomplete-marker
+presence, completion-file size/readability and its timestamp. If SSH itself
+fails, diagnose authentication/host-key/network access before inferring source
+state. Inspect the exporter on dockerhost26 only after these results: its job
+name, schedule, latest failure and required database exports remain unknown.
+Do not delete either incomplete marker or manually write completion timestamps.
+Do not invoke the pull script yet: its rsync deletion option mutates staging.
+
+The pasted pull begins `!/bin/bash`; confirm the actual first line is
+`#!/bin/bash` before changing anything. The supplied text alone does not establish
+a malformed installed shebang.
+
 ## Documented backup estate
 
 Existing October records describe Backrest on `restic` (`192.168.0.249`) and six
@@ -120,11 +162,11 @@ plan's own failing operation and redacted log; do not infer it from local status
 | Area | Required facts/evidence | Status |
 |---|---|---|
 | Execution context | Backrest version, native/container deployment, hook host/user and path mappings | Unknown |
-| Freshness check | Reviewed script, actual staging and marker paths, timestamp semantics and clock state | Script path and 3-hour limit only |
-| Refresh pipeline | Export/pull scripts, scheduler, dependencies, trigger history and first error after last success | Pull script/unit names established; 02:30 triggers and repeated exit 1 on October 10–11; definitions and script diagnostics missing |
+| Freshness check | Reviewed script, actual staging and marker paths, timestamp semantics and clock state | Scripts supplied; paths and marker rules established; live metadata/clock checks missing |
+| Refresh pipeline | Export/pull scripts, scheduler, dependencies, trigger history and first error after last success | Pull script and unit definitions supplied; nightly 02:30; repeated exit 1 on October 10–11; remote readiness and source exporter state missing |
 | Source coverage | Per-application data paths, named volumes, databases/dump method, export validation and exclusions | Unknown |
 | Both dockerhost26 plans | Exact source paths, hook conditions/failure policy, schedules/timezone, retention and repository mapping | Names only; local hook error supplied |
-| Local repository | Actual repository path, mount/capacity, latest successful snapshot and check result | Appliance disk documented; plan mapping unknown |
+| Local repository | Actual repository path, mount/capacity, latest successful snapshot and check result | Staging path established; appliance disk documented; repository/plan mapping unknown |
 | Wasabi repository | Endpoint/region, bucket/prefix, secret references, access policy, latest snapshot/check | Unknown; never record secret values |
 | Alerting | Failure and stale-staging alerts, recipient reference, retry policy and delivery test | HA status sensors documented; notification behavior unknown |
 | Recovery | Recovery objectives, offline credential recovery locations, application/database restore tests | Local smoke test and isolated Minecraft restore documented only |
