@@ -32,7 +32,7 @@ User-supplied filename discovery identifies these files on `restic`:
 - Timer enablement link under `/etc/systemd/system/timers.target.wants/`.
 
 The supplied timer listing records a trigger at 02:30 on October 11 and the next
-trigger at 02:30 on October 12. The timer definition/timezone is not yet inspected.
+trigger at 02:30 on October 12. The subsequently supplied timer definition uses `OnCalendar=*-*-* 02:30:00` with no explicit timezone; observed service timestamps use AEST. Host timezone confirmation remains outstanding.
 Service status and journal show the pull script exiting with status 1 on both
 October 10 and 11, at the initial 02:30 attempt and subsequent five-minute retries
 through 02:55. Each attempt exits within approximately one second. At about 03:00,
@@ -46,8 +46,23 @@ initial exit. No script-level diagnostic appears in the supplied journal, so
 source availability, exports, permissions, transfer and marker handling remain
 unresolved. The October 10–11 excerpt does not date the first failed refresh.
 
-Next inspect the service/timer definitions, pull script and freshness script
-without executing them. Identify any redirected output or separate log path,
+The subsequently supplied service definition establishes:
+
+- Execution user/group: `backrest:backrest`; `Type=oneshot`.
+- Network ordering: `After=network-online.target` and `Wants=network-online.target`.
+- Retry policy: `Restart=on-failure`, `RestartSec=5min`.
+- Start limit: six starts within 3,600 seconds.
+- Start timeout: one hour.
+- Timer: nightly 02:30, `Persistent=true`, activating the pull service.
+
+The pasted timer stops at `[Install]`; its install settings were not supplied.
+An enablement link was discovered earlier. No working directory, environment or
+output redirection is shown in the supplied service excerpt. The scripts remain
+uninspected. Inspect source access and staging permissions in the actual
+`backrest` execution context once their paths and mechanisms are established;
+a successful command as an administrator would not prove this service can run it.
+
+Next inspect the pull script and freshness script without executing them. Identify any redirected output or separate log path,
 early exit conditions, execution user and transfer/export dependencies. Review
 all output for embedded credentials before sharing. Do not use `bash -x`, which
 can expose expanded secrets, or manually restart the service until the pull
