@@ -110,6 +110,22 @@ The pasted pull begins `!/bin/bash`; confirm the actual first line is
 `#!/bin/bash` before changing anything. The supplied text alone does not establish
 a malformed installed shebang.
 
+## Confirmed source readiness failure — 2026-10-11
+
+The user ran the read-only SSH probe as local `backrest` with the pull script's
+identity and remote account. It successfully entered the export `files`
+directory and reported `Export incomplete marker PRESENT` and
+`COMPLETED_AT missing or empty`.
+
+This confirms both source readiness conditions fail, explaining the pull's
+silent early exit 1. SSH authentication and access to that directory worked for
+this probe. The source export is not marked complete; whether its exporter is
+currently running, failed or abandoned remains unknown. Do not remove markers
+or fabricate timestamps. Identify the exporter scheduler and script on
+dockerhost26 (`192.168.0.160`), then inspect its status, logs and database export
+steps before deciding on a repair. This does not establish the Wasabi plan's
+own error or complete staging/repository permissions.
+
 ## Documented backup estate
 
 Existing October records describe Backrest on `restic` (`192.168.0.249`) and six
