@@ -21,6 +21,38 @@ The user also identified `dockerhost26-wasabi`, but provided no separate error
 for that plan. Shared staging is a hypothesis until both plan definitions and
 logs are inspected. No Wasabi connectivity or credential failure is established.
 
+## Refresh service evidence — 2026-10-11
+
+User-supplied filename discovery identifies these files on `restic`:
+
+- `/usr/local/sbin/pull-dockerhost26-backup`
+- `/usr/local/sbin/check-dockerhost26-staging`
+- `/etc/systemd/system/pull-dockerhost26-backup.service`
+- `/etc/systemd/system/pull-dockerhost26-backup.timer`
+- Timer enablement link under `/etc/systemd/system/timers.target.wants/`.
+
+The supplied timer listing records a trigger at 02:30 on October 11 and the next
+trigger at 02:30 on October 12. The timer definition/timezone is not yet inspected.
+Service status and journal show the pull script exiting with status 1 on both
+October 10 and 11, at the initial 02:30 attempt and subsequent five-minute retries
+through 02:55. Each attempt exits within approximately one second. At about 03:00,
+the next restart request is refused with `Start request repeated too quickly`.
+The service is failed; its `ExecStart` is `/usr/local/sbin/pull-dockerhost26-backup`.
+The supplied service timestamps use AEST.
+
+This confirms the timer fires and the refresh service repeatedly fails. The
+restart limit is reached after earlier script failures; it does not explain the
+initial exit. No script-level diagnostic appears in the supplied journal, so
+source availability, exports, permissions, transfer and marker handling remain
+unresolved. The October 10–11 excerpt does not date the first failed refresh.
+
+Next inspect the service/timer definitions, pull script and freshness script
+without executing them. Identify any redirected output or separate log path,
+early exit conditions, execution user and transfer/export dependencies. Review
+all output for embedded credentials before sharing. Do not use `bash -x`, which
+can expose expanded secrets, or manually restart the service until the pull
+script's effects have been reviewed.
+
 ## Documented backup estate
 
 Existing October records describe Backrest on `restic` (`192.168.0.249`) and six
@@ -74,7 +106,7 @@ plan's own failing operation and redacted log; do not infer it from local status
 |---|---|---|
 | Execution context | Backrest version, native/container deployment, hook host/user and path mappings | Unknown |
 | Freshness check | Reviewed script, actual staging and marker paths, timestamp semantics and clock state | Script path and 3-hour limit only |
-| Refresh pipeline | Export/pull scripts, scheduler, dependencies, trigger history and first error after last success | Unknown |
+| Refresh pipeline | Export/pull scripts, scheduler, dependencies, trigger history and first error after last success | Pull script/unit names established; 02:30 triggers and repeated exit 1 on October 10–11; definitions and script diagnostics missing |
 | Source coverage | Per-application data paths, named volumes, databases/dump method, export validation and exclusions | Unknown |
 | Both dockerhost26 plans | Exact source paths, hook conditions/failure policy, schedules/timezone, retention and repository mapping | Names only; local hook error supplied |
 | Local repository | Actual repository path, mount/capacity, latest successful snapshot and check result | Appliance disk documented; plan mapping unknown |
