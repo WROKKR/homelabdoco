@@ -185,7 +185,7 @@ is absent. The exact proposed change is:
 ```
 
 This replaces the retired dependency and adds Dockhand's persistent state to the
-recovery set. Live installation and recovery verification are still pending.
+recovery set. The user applied this change and the source export subsequently passed; staging refresh, Backrest snapshots and restore verification remain pending.
 The script stops workloads before checking volume existence, explaining why
 an obsolete entry also causes an avoidable outage. Preflight the three selected
 volumes before retrying. A future improvement should validate all required paths
@@ -212,6 +212,30 @@ fresh source completion timestamp. Then refresh restic staging, verify its
 freshness hook, retry each Backrest plan and restore representative data,
 including Dockhand. Wasabi's separate failure log and both plans' actual coverage
 remain outstanding. A successful job does not substitute for this recovery test.
+
+## Source export recovered — 2026-10-11 13:30 AEST
+
+The user confirmed all three selected volumes exist, applied the reviewed
+Portainer-to-Dockhand replacement and supplied the updated volume list. After
+explicitly authorizing the Docker outage, the user retried the exporter.
+
+The supplied service output records exit `0/SUCCESS`, with the complete job
+running from 13:29:43 to 13:30:57 AEST. It reports successful logical database
+exports, copies `/opt/containers` and all three selected volumes including
+`dockhand_dockhand_data`, and reports restarting all previously running
+containers. The completion timestamp is `2026-10-11T13:30:57+10:00`; it was printed
+by the supplied command conditional on the absence of the source incomplete
+marker. The immediate Docker snapshot contains 36 running containers. Dockhand
+and pia-vpn are healthy; several other health checks are still starting, so
+subsequent health and application checks remain outstanding.
+
+Source export failure is resolved for this manual run. The end-to-end backup
+incident remains open: refresh restic staging using its reviewed pull service,
+run the freshness check as `backrest`, verify the source timestamp propagates,
+and retry both Backrest plans. Preserve the failure gate and do not fabricate
+markers. Capture snapshot results and an isolated restore before claiming
+recoverability. Confirm subsequent nightly export/pull runs succeed; preflight
+before stopping containers remains a recommended improvement.
 
 ## Documented backup estate
 

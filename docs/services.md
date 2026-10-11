@@ -86,7 +86,7 @@ Frigate provides local object detection and Review items; UniFi Protect remains 
 The user confirms Portainer was replaced with Dockhand, superseding the older
 Portainer management notes. Supplied mount inspection identifies Dockhand's
 `/app/data` as named volume `dockhand_dockhand_data`; the Docker socket is also
-bind-mounted. The existing file exporter still requires the retired
-`portainer_portainer_data` volume and omits Dockhand's volume. A reviewed
-replacement is recorded in [backup troubleshooting](backup-troubleshooting.md);
-live application and backup/restore validation are pending.
+bind-mounted. The user replaced the retired
+`portainer_portainer_data` export entry with Dockhand's volume. The manual source
+export passed at 13:30:57 AEST; staging refresh, backup and restore validation
+remain pending. See [backup troubleshooting](backup-troubleshooting.md).

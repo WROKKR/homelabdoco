@@ -22,8 +22,10 @@ The export job observed on 2026-10-10/11 stops 36 running Docker containers for
 file copying, including Technitium DNS and the VPN stack, then reports restarting
 them with DNS/VPN dependency ordering. Manual export retries are service-disrupting
 and require confirmation after script review. Its nightly 02:00 AEST trigger
-precedes the restic pull at 02:30. The export currently fails on a missing
-`portainer_portainer_data` volume; see [backup troubleshooting](backup-troubleshooting.md).
+precedes the restic pull at 02:30. The missing retired
+`portainer_portainer_data` entry was replaced with `dockhand_dockhand_data`,
+and a manual export passed at 13:30:57 AEST on 2026-10-11. Staging refresh and
+end-to-end backup/restore validation remain pending; see [backup troubleshooting](backup-troubleshooting.md).
 The source export inventory and current application coverage remain to be reconciled.
 
 ## Recovery
