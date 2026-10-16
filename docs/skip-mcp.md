@@ -5,7 +5,7 @@ Inventory of the local MCP servers Hermes (Skip) can call on `ollama2`. All are 
 | Hermes server | Script on `ollama2` | Tools | Reads from | Credential (on `ollama2` only) | Doc |
 |---|---|---|---|---|---|
 | `proxmox_status` | `~/skip-proxmox.py` | `yggdrasil_host_status`, `homeassistant_vm_status` (VM 116), `ollama2_vm_status` (VM 118) | Proxmox API on `yggdrasil` | `~/.config/skip-proxmox/token.json` (audit-only API token) and `pve-root-ca.pem` | [`skip-proxmox.md`](skip-proxmox.md) |
-| `dockhand_status` | `~/skip-dockhand.py` | `dockerhost26_container_status`, `minecraft_dmz_container_status` | Dockhand on `dockerhost26:3002` | None (Dockhand auth is disabled) | [`dockhand-skip.md`](dockhand-skip.md) |
+| `dockhand_status` | `~/skip-dockhand.py` | `dockerhost26_container_status`, `minecraft_dmz_container_status` | Dockhand on `dockerhost26:3002` | Private `~/.config/skip-dockhand/token`; authenticated bridge prepared, live validation pending | [`dockhand-skip.md`](dockhand-skip.md) |
 | `homelab_report` | Not recorded | `homelab_health_report` (combines the five tools above into a fixed-format report) | As above | As above | [`skip-health-reports.md`](skip-health-reports.md) |
 | `homeassistant_status` | `~/skip-homeassistant.py` | `home_status_now`, `daily_totals_7d`, `recent_changes_24h` | Home Assistant REST API, allowlisted sensors only | `~/.config/skip-homeassistant/token.json` (non-admin `skip-readonly` user) and `entities.json` | [`skip-homeassistant.md`](skip-homeassistant.md) |
 
@@ -31,4 +31,4 @@ The scripts are the source of truth for block wording.
 ## Boundaries
 
 - No tool restarts, edits or controls anything. Tokens for Proxmox and Home Assistant could do more if used outside these scripts; keeping Skip's terminal and file tools disabled is part of the boundary.
-- Dockhand itself has authentication disabled while holding the Docker socket on `dockerhost26`, so anything on the LAN that reaches port 3002 can control containers regardless of Skip's read-only bridge.
+- Dockhand built-in authentication is now enabled (user-confirmed 2026-10-16). The accepted bridge API token has full Dockhand permissions in Free edition; fixed GET-only code limits the exposed tools, not the underlying credential. The bridge's current HTTP transport does not encrypt the token on the LAN.

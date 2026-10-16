@@ -1,5 +1,11 @@
 # Dockhand visibility for Skip
 
+## Authentication update — 2026-10-16
+
+The user enabled built-in Dockhand login; Skip's previously unauthenticated requests now fail collection. The user accepts a full-access Dockhand API token held by the bridge on ollama2. Free-edition users have full access to all environments; the credential itself is not read-only. The bridge still exposes only its two fixed, argument-free GET status tools. Keep Hermes terminal/file tools disabled. Store the token only at `~/.config/skip-dockhand/token`, with directory mode 0700 and file mode 0600, never in Git, chat, or command arguments. The updated script requires this file and sends a Bearer header. Existing redirect rejection, fixed host/environment scope, projected output and sanitized failures remain. The existing endpoint is HTTP on the LAN: the token is not encrypted in transit; this is a remaining transport limitation.
+
+Prepared and locally tested in the repository; transfer and authenticated live validation remain pending. Copy the updated `services/skip-dockhand/server.py` to `~/skip-dockhand.py` on ollama2, then run `python3 ~/skip-dockhand.py --check`. The combined report's actual script path and imports must be checked if its Docker results remain unavailable after the standalone bridge succeeds. Earlier statements below about disabled authentication describe historical state.
+
 User-confirmed on 2026-10-03:
 
 - Dockhand v1.0.50, Free edition, authentication disabled.
