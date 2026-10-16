@@ -9,7 +9,7 @@ class ScopeTests(unittest.TestCase):
     def test_private_token_is_sent_only_to_fixed_endpoint(self):
         with tempfile.TemporaryDirectory() as directory:
             token_file = Path(directory) / "token"
-            token_file.write_text("dh_test_fixture\n")
+            token_file.write_text("opaque_test_fixture\n")
             token_file.chmod(0o600)
             with patch.object(server, "TOKEN_FILE", token_file), patch.object(server.urllib.request, "build_opener") as build:
                 build.return_value.open.return_value.__enter__.return_value.read.return_value = b"[]"
@@ -17,8 +17,8 @@ class ScopeTests(unittest.TestCase):
                 request = build.return_value.open.call_args.args[0]
                 self.assertEqual(request.full_url, server.BASE_URL + "?env=1")
                 self.assertEqual(request.get_method(), "GET")
-                self.assertEqual(request.get_header("Authorization"), "Bearer dh_test_fixture")
-                self.assertNotIn("dh_test_fixture", str(result))
+                self.assertEqual(request.get_header("Authorization"), "Bearer opaque_test_fixture")
+                self.assertNotIn("opaque_test_fixture", str(result))
                 token_file.chmod(0o644)
                 with self.assertRaises(ValueError):
                     server.collect(1)

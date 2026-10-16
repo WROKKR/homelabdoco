@@ -68,7 +68,7 @@ def collect(env_id):
     if TOKEN_FILE.stat().st_mode & 0o077:
         raise ValueError("Token file must be private")
     token = TOKEN_FILE.read_text().strip()
-    if not token.startswith("dh_") or not token.isascii() or any(c.isspace() for c in token):
+    if not token or any(not 33 <= ord(c) <= 126 for c in token):
         raise ValueError("Invalid token file")
     request = urllib.request.Request(f"{BASE_URL}?env={env_id}", headers={"Accept": "application/json", "Authorization": f"Bearer {token}"}, method="GET")
     with urllib.request.build_opener(NoRedirect, urllib.request.ProxyHandler({})).open(request, timeout=10) as response:
